@@ -60,4 +60,5 @@ class Session(object):
         """
         Render the game state
         """
+        self.renderer.reset_frame()
         self.game.render(self.renderer)

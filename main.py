@@ -3,11 +3,10 @@
 Test harness
 """
 
-import sys
 from games.game import Session
 from games.maze import Maze, Layout
 from players import HumanPlayer
-from renderers import PrintRenderer
+from renderers import TerminalRenderer
 
 
 def main():
@@ -16,9 +15,9 @@ def main():
     """
     game = Maze(Layout.from_string(Layout.EASY_STR))
     player = HumanPlayer()
-    renderer = PrintRenderer(sys.stdout)
-    session = Session(game, player, renderer)
-    session.play()
+    with TerminalRenderer().render_context() as renderer:
+        session = Session(game, player, renderer)
+        session.play()
 
 
 if __name__ == '__main__':
