@@ -20,6 +20,12 @@ class RenderContext(object):
     """
     Render device handle
     """
+    def reset_frame(self):
+        """
+        Reset the frame and prepare to draw again
+        """
+        raise NotImplementedError
+
     def draw_text_array(self, arr):
         """
         Draws an array of characters
@@ -79,9 +85,6 @@ class TerminalRenderer(BaseRenderer):
             self.height = 0
 
         def reset_frame(self):
-            """
-            Reset the frame and prepare to draw again
-            """
             # Terminal controls:
             # \x1b[A - Move up
             # \x1b[2K - Clear line
