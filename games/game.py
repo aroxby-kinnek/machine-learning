@@ -51,3 +51,5 @@ class Session(object):
         """
         self.renderer.reset_frame()
         self.game.render(self.renderer)
+        # Line break
+        self.renderer.draw_text_array([''])

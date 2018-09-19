@@ -20,7 +20,7 @@ class Layout(object):
         'x+x\n'
         'x+x\n'
         'xsx\n'
-        'xxx\n'
+        'xxx'
     )
 
     def __init__(self, tiles):
