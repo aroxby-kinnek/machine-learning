@@ -109,7 +109,8 @@ class TerminalRenderer(BaseRenderer):
         sys.stdout = self.LockedFile()
         sys.stderr = self.LockedFile()
 
-        yield self.Renderer(stdout)
-
-        sys.stderr = stderr
-        sys.stdout = stdout
+        try:
+            yield self.Renderer(stdout)
+        finally:
+            sys.stderr = stderr
+            sys.stdout = stdout
