@@ -27,17 +27,6 @@ class Game(object):
         raise NotImplementedError
 
 
-class Player(object):
-    """
-    Base player object
-    """
-    def next_move(self, game):
-        """
-        Retrieve the next move for this player in this game
-        """
-        raise NotImplementedError
-
-
 class Session(object):
     """
     Let a player play a game
