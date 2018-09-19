@@ -117,3 +117,27 @@ class TerminalRenderer(BaseRenderer):
         finally:
             sys.stderr = stderr
             sys.stdout = stdout
+
+
+class NullRenderer(BaseRenderer, RenderContext):
+    """
+    Dummy renderer
+    """
+    def draw_text_array(self, arr):
+        """
+        Dummy method for compatibility
+        """
+        pass
+
+    def reset_frame(self):
+        """
+        Dummy method for compatibility
+        """
+        pass
+
+    @contextmanager
+    def render_context(self):
+        """
+        Dummy method for compatibility
+        """
+        yield self
