@@ -12,12 +12,13 @@ class Layout(object):
     START = 's'
     WALL = 'x'
     EMPTY = ' '
+    SOLUTION = '+'
 
     EASY_STR = (
         'xxx\n'
         'xex\n'
-        'x x\n'
-        'x x\n'
+        'x+x\n'
+        'x+x\n'
         'xsx\n'
         'xxx\n'
     )
@@ -72,14 +73,14 @@ class Layout(object):
         """
         return self._find_target(self.GOAL)
 
-    def is_blocked(self, x, y):
+    def get_token(self, x, y):
         """
-        Is the tile at x, y unreachable
+        Retrieve the tile at x, y
         """
-        ret = True
+        ret = self.WALL
         if y < len(self.tiles):
             if x < len(self.tiles[y]):
-                ret = self.tiles[y][x] == self.WALL
+                ret = self.tiles[y][x]
         return ret
 
     def erase(self, x, y):
@@ -124,6 +125,7 @@ class Maze(Game):
 
     def render(self, renderer):
         self.layout.render(renderer)
+        renderer.draw_text_array(['Score: {}'.format(self.score)])
 
     def bad_move(self):
         """
@@ -152,11 +154,15 @@ class Maze(Game):
 
     def _move(self, dx, dy):
         new_pos = self.pos[0] + dx, self.pos[1] + dy
-        if not self.layout.is_blocked(*new_pos):
+        dst_token = self.layout.get_token(*new_pos)
+        if dst_token != self.layout.WALL:
             old_pos = self.pos
             self.layout.erase(*old_pos)
             self.layout.put_token(self.PLAYER_TOKEN, *new_pos)
             self.pos = new_pos
-            if self.pos == self.layout.goal:
+            if dst_token == self.layout.SOLUTION:
+                self.score += 1
+            elif dst_token == self.layout.GOAL:
+                self.score += 1
                 self.layout.put_token(self.WIN_TOKEN, *new_pos)
                 self.quit()
