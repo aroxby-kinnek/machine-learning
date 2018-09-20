@@ -36,14 +36,20 @@ class Session(object):
         self.player = player
         self.renderer = renderer
 
-    def play(self):
+    def play(self, max_turns=None):
         """
         Loop over a game
         """
         self.render()
-        while self.game.in_progress():
+        turn = 1
+        finished = False
+        while max_turns is None or turn <= max_turns:
             self.game.tick(self.player.next_move(self.game))
             self.render()
+            finished = not self.game.in_progress()
+            if finished:
+                break
+            turn += 1
 
     def render(self):
         """
