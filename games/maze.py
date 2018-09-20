@@ -116,6 +116,7 @@ class Maze(Game):
             'D': self.east,
             'Q': self.quit,
         }
+        self.win = False
 
     def in_progress(self):
         return self.playing
@@ -126,6 +127,9 @@ class Maze(Game):
     def render(self, renderer):
         self.layout.render(renderer)
         renderer.draw_text_array(['Score: {}'.format(self.score)])
+
+    def won(self):
+        return self.win
 
     def bad_move(self):
         """
@@ -165,4 +169,5 @@ class Maze(Game):
             elif dst_token == self.layout.GOAL:
                 self.score += 1
                 self.layout.put_token(self.WIN_TOKEN, *new_pos)
+                self.win = True
                 self.quit()

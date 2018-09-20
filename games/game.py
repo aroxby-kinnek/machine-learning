@@ -20,6 +20,12 @@ class Game(object):
         """
         raise NotImplementedError
 
+    def won(self):
+        """
+        Determine if the game was won
+        """
+        raise NotImplementedError
+
     def render(self, output):
         """
         Render the game state
@@ -47,7 +53,8 @@ class Session(object):
             """
             Returns the least possible result
             """
-            return cls(None, None, None, None, None)
+            # '' is > any int
+            return cls(None, None, 0, '', False)
 
         def __gt__(self, other):
             if self.finished > other.finished:
@@ -56,7 +63,7 @@ class Session(object):
                 if self.score > other.score:
                     return True
                 elif self.score == other.score:
-                    if self.turns > other.turns:
+                    if self.turns < other.turns:
                         return True
             return False
 
@@ -80,7 +87,7 @@ class Session(object):
                 break
             turn += 1
         return self.Result(
-            self.game, self.player, self.game.score, turn, finished)
+            self.game, self.player, self.game.score, turn, self.game.won())
 
     def render(self):
         """
