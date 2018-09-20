@@ -18,7 +18,7 @@ class BotTrainer(object):
             max_mutations,
             min_mutations=1,
             max_turns=100,
-            renderer_factory=NullRenderer,
+            game_renderer_factory=NullRenderer,
     ):
         # TODO: Reduce state
         self.game_factory = game_factory
@@ -27,24 +27,23 @@ class BotTrainer(object):
         self.max_generations = max_generations
         self.max_mutations = max_mutations
         self.min_mutations = min_mutations
-        self.renderer_factory = renderer_factory
+        self.game_renderer_factory = game_renderer_factory
         self.max_turns = max_turns
 
-    def test_bot(self, bot):
+    def test_bot(self, bot, render_context):
         """
         Test the bot against the game
         """
         game = self.game_factory()
-        renderer = self.renderer_factory()
-        session = Session(game, bot, renderer)
+        session = Session(game, bot, render_context)
         return session.play(self.max_turns)
 
-    def test_generation(self, bots, min_result):
+    def test_generation(self, bots, min_result, render_context):
         """
         Test a set of bots for the best
         """
         for bot in bots:
-            result = self.test_bot(bot)
+            result = self.test_bot(bot, render_context)
             if result > min_result:
                 min_result = result
         return min_result
@@ -58,19 +57,22 @@ class BotTrainer(object):
         best_result.player = best_bot
         bots = [best_bot]
         generations = 0
-        while True:
-            next_best_result = self.test_generation(bots, best_result)
-            next_best_bot = next_best_result.player
-            if next_best_bot is not None and next_best_result > best_result:
-                best_result = next_best_result
-                best_bot = next_best_bot
-            if best_result.finished:
-                break
-            generations += 1
-            if generations > self.max_generations:
-                break
-            else:
-                bots = self._breed(best_bot)
+        with self.game_renderer_factory().render_context() as context:
+            while True:
+                next_best_result = self.test_generation(
+                    bots, best_result, context)
+                next_best_bot = next_best_result.player
+                if (next_best_bot is not None and
+                        next_best_result > best_result):
+                    best_result = next_best_result
+                    best_bot = next_best_bot
+                if best_result.finished:
+                    break
+                generations += 1
+                if generations > self.max_generations:
+                    break
+                else:
+                    bots = self._breed(best_bot)
         return generations, best_result
 
     def _breed(self, bot):
