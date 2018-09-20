@@ -31,6 +31,35 @@ class Session(object):
     """
     Let a player play a game
     """
+    class Result(object):
+        """
+        Holds session results
+        """
+        def __init__(self, game, player, score, turns, finished):
+            self.game = game
+            self.player = player
+            self.score = score
+            self.turns = turns
+            self.finished = finished
+
+        @classmethod
+        def zero(cls):
+            """
+            Returns the least possible result
+            """
+            return cls(None, None, None, None, None)
+
+        def __gt__(self, other):
+            if self.finished > other.finished:
+                return True
+            elif self.finished == other.finished:
+                if self.score > other.score:
+                    return True
+                elif self.score == other.score:
+                    if self.turns > other.turns:
+                        return True
+            return False
+
     def __init__(self, game, player, renderer):
         self.game = game
         self.player = player
@@ -50,6 +79,8 @@ class Session(object):
             if finished:
                 break
             turn += 1
+        return self.Result(
+            self.game, self.player, self.game.score, turn, finished)
 
     def render(self):
         """
