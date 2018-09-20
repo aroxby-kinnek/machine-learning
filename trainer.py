@@ -58,18 +58,20 @@ class BotTrainer(object):
         best_result.player = best_bot
         bots = [best_bot]
         generations = 0
-        while not best_result.finished:
+        while True:
             next_best_result = self.test_generation(bots, best_result)
             next_best_bot = next_best_result.player
             if next_best_bot is not None and next_best_result > best_result:
                 best_result = next_best_result
                 best_bot = next_best_bot
+            if best_result.finished:
+                break
             generations += 1
             if generations > self.max_generations:
                 break
             else:
                 bots = self._breed(best_bot)
-        return best_result
+        return generations, best_result
 
     def _breed(self, bot):
         bots = []
