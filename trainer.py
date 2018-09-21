@@ -2,7 +2,8 @@
 Classes to train genetic bots
 """
 from games.game import Session
-from renderers import NullRenderer
+from renderers import NullRenderer, TerminalRenderer
+from time import sleep
 
 
 class BotTrainer(object):
@@ -18,7 +19,9 @@ class BotTrainer(object):
             max_mutations,
             min_mutations=1,
             max_turns=100,
+            goal_score=None,
             game_renderer_factory=NullRenderer,
+            progress_renderer_factory=TerminalRenderer
     ):
         # TODO: Reduce state
         self.game_factory = game_factory
@@ -28,7 +31,9 @@ class BotTrainer(object):
         self.max_mutations = max_mutations
         self.min_mutations = min_mutations
         self.max_turns = max_turns
+        self.goal_score = float(goal_score) if goal_score is not None else None
         self.game_renderer_factory = game_renderer_factory
+        self.progress_renderer_factory = progress_renderer_factory
 
     def test_bot(self, bot, render_context):
         """
@@ -57,23 +62,35 @@ class BotTrainer(object):
         best_result.player = best_bot
         bots = [best_bot]
         generations = 0
-        with self.game_renderer_factory().render_context() as context:
-            while True:
-                next_best_result = self.test_generation(
-                    bots, best_result, context)
-                next_best_bot = next_best_result.player
-                if (next_best_bot is not None and
-                        next_best_result > best_result):
-                    best_result = next_best_result
-                    best_bot = next_best_bot
-                if best_result.finished:
-                    break
-                generations += 1
-                if generations > self.max_generations:
-                    break
-                else:
-                    bots = self._breed(best_bot)
+        with self.progress_renderer_factory().render_context() as progress_ctx:
+            with self.game_renderer_factory().render_context() as game_ctx:
+                while True:
+                    self._do_progress(generations, best_result, progress_ctx)
+                    next_best_result = self.test_generation(
+                        bots, best_result, game_ctx)
+                    next_best_bot = next_best_result.player
+                    if (next_best_bot is not None and
+                            next_best_result > best_result):
+                        best_result = next_best_result
+                        best_bot = next_best_bot
+                    if best_result.finished:
+                        break
+                    generations += 1
+                    if generations > self.max_generations:
+                        break
+                    else:
+                        bots = self._breed(best_bot)
         return generations, best_result
+
+    def _do_progress(self, generation, best_result, render_context):
+        msg = 'Testing generation {}'.format(generation)
+        if self.goal_score is not None:
+            msg += ' ({:.2%})'.format(best_result.score / self.goal_score)
+        msg += '...'
+
+        render_context.reset_frame()
+        render_context.draw_text_array([msg])
+        sleep(0.5)
 
     def _breed(self, bot):
         bots = []

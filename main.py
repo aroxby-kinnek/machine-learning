@@ -19,7 +19,7 @@ def main():
         return Maze(Layout.from_string(Layout.EASY_STR))
 
     bot_factory = PlannedBot
-    trainer = BotTrainer(game_factory, bot_factory, 4, 100, 2)
+    trainer = BotTrainer(game_factory, bot_factory, 4, 100, 2, goal_score=3)
     generations, result = trainer.breed_best_bot()
 
     msg = 'After {} generations, the bot {} the game'.format(
