@@ -15,9 +15,9 @@ class BotTrainer(object):
             game_factory,
             bot_factory,
             generation_size,
-            max_generations,
             max_mutations,
             min_mutations=1,
+            max_generations=10000,
             max_turns=100,
             goal_score=None,
             game_renderer_factory=NullRenderer,
@@ -27,9 +27,9 @@ class BotTrainer(object):
         self.game_factory = game_factory
         self.bot_factory = bot_factory
         self.generation_size = generation_size
-        self.max_generations = max_generations
         self.max_mutations = max_mutations
         self.min_mutations = min_mutations
+        self.max_generations = max_generations
         self.max_turns = max_turns
         self.goal_score = float(goal_score) if goal_score is not None else None
         self.game_renderer_factory = game_renderer_factory
