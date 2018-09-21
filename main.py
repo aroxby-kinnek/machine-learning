@@ -25,8 +25,8 @@ def main():
     msg = 'After {} generations, the bot {} the game'.format(
         generations, 'won' if result.finished else 'lost')
     print msg
-    print 'Bot score: ', result.score
-    print 'Bot plan: ', result.player.moves
+    print 'Bot score:', result.score
+    print 'Bot plan:', result.player.moves
 
 
 if __name__ == '__main__':
