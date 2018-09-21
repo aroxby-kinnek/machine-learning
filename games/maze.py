@@ -22,6 +22,17 @@ class Layout(object):
         'xsx\n'
         'xxx'
     )
+    MEDIUM_STR = (
+        'xxxxxxxxxxxx\n'
+        'xxx    xxxxx\n'
+        'xxx xxxxxxxx\n'
+        'x+++++++++ex\n'
+        'x+xxxx xxxxx\n'
+        'x+xxxx    xx\n'
+        'x+xxxxxxxxxx\n'
+        'xsxxxxxxxxxx\n'
+        'xxxxxxxxxxxx'
+    )
 
     def __init__(self, tiles):
         self.tiles = tiles[:]

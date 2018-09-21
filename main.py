@@ -16,10 +16,10 @@ def main():
         """
         Creates the game we need
         """
-        return Maze(Layout.from_string(Layout.EASY_STR))
+        return Maze(Layout.from_string(Layout.MEDIUM_STR))
 
     bot_factory = PlannedBot
-    trainer = BotTrainer(game_factory, bot_factory, 4, 2, goal_score=3)
+    trainer = BotTrainer(game_factory, bot_factory, 4, 2, goal_score=13)
     generations, result = trainer.breed_best_bot()
 
     msg = 'After {} generations, the bot {} the game'.format(
