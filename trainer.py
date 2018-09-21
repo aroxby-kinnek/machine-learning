@@ -27,8 +27,8 @@ class BotTrainer(object):
         self.max_generations = max_generations
         self.max_mutations = max_mutations
         self.min_mutations = min_mutations
-        self.game_renderer_factory = game_renderer_factory
         self.max_turns = max_turns
+        self.game_renderer_factory = game_renderer_factory
 
     def test_bot(self, bot, render_context):
         """
