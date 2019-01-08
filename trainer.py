@@ -1,9 +1,9 @@
 """
 Classes to train genetic bots
 """
+from time import sleep
 from games.game import Session
 from renderers import NullRenderer, TerminalRenderer
-from time import sleep
 
 
 class BotTrainer(object):
