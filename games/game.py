@@ -26,7 +26,7 @@ class Game(object):
         """
         raise NotImplementedError
 
-    def render(self, output):
+    def render(self, renderer):
         """
         Render the game state
         """
