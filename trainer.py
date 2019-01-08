@@ -94,7 +94,7 @@ class BotTrainer(object):
 
     def _breed(self, bot):
         bots = []
-        controls = self.game_factory().all_controls()
+        controls = self.game_factory().player_controls()
         for _ in xrange(self.generation_size):
             bots.append(bot.reproduce(
                 controls, self.min_mutations, self.max_mutations

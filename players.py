@@ -55,8 +55,6 @@ class PlannedBot(BotPlayer):
         """
         Create a new bot based on this bot
         """
-        # HACK
-        allowed_moves = [move for move in allowed_moves if move != 'Q']
         mutations = random.randint(min_mutations, max_mutations)
         new_moves = self.moves[:]
         for _ in xrange(mutations):

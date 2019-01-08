@@ -120,20 +120,24 @@ class Maze(Game):
         self.playing = True
         self.pos = layout.start
         self.layout.put_token(self.PLAYER_TOKEN, *self.pos)
-        self.controls = {
+        self.game_controls = {
             'W': self.north,
             'A': self.west,
             'S': self.south,
             'D': self.east,
+        }
+        self.meta_controls = {
             'Q': self.quit,
         }
+        self.controls = self.game_controls.copy()
+        self.controls.update(self.meta_controls)
         self.win = False
 
     def in_progress(self):
         return self.playing
 
-    def all_controls(self):
-        return self.controls.keys()
+    def player_controls(self):
+        return self.game_controls.keys()
 
     def render(self, renderer):
         self.layout.render(renderer)
