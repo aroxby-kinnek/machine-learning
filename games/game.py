@@ -32,6 +32,12 @@ class Game(object):
         """
         raise NotImplementedError
 
+    def player_controls(self):
+        """
+        Gives all the controls needed to play the game
+        """
+        raise NotImplementedError
+
 
 class Session(object):
     """
