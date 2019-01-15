@@ -57,6 +57,22 @@ class Network(object):
         return traversal
 
     def add_random_neuron(self, allow_middle=True, factory=Neuron):
+        edge = self._create_canidate_edge()
+        new_input, input_polarity, new_output, output_polarity = edge
+
+        node = factory()
+        node.outputs[new_output] = output_polarity
+        new_input.outputs[node] = input_polarity
+        self.middle.append(new_input)
+
+    def add_random_connection(self):
+        edge = self._create_canidate_edge()
+        new_input, input_polarity, new_output, output_polarity = edge
+
+        # TODO: Is it ok to connect an input directly to an output?
+        new_input.outputs[new_output] = input_polarity
+
+    def _create_canidate_edge(self, allow_middle=True):
         input_polarity = random.choice((True, False))
         output_polarity = random.choice((True, False))
 
@@ -68,35 +84,7 @@ class Network(object):
         output_choices = self.outputs
         if allow_middle:
             output_choices += self.middle
+        output_choices = [_ for _ in output_choices if _ != new_input]
         new_output = random.choice(output_choices)
 
-        # FIXME: Adjust output_choices, do not recurse
-        if new_input == new_output:
-            return self.add_random_neuron(allow_middle, factory)
-
-        node = factory()
-        node.outputs[new_output] = output_polarity
-        new_input.outputs[node] = input_polarity
-
-        self.middle.append(new_input)
-
-    def add_random_connection(self, allow_middle=True):
-        # TODO: De-dupe code with add_random_neuron
-        polarity = random.choice((True, False))
-
-        input_choices = self.inputs
-        if allow_middle:
-            input_choices += self.middle
-        new_input = random.choice(input_choices)
-
-        output_choices = self.outputs
-        if allow_middle:
-            output_choices += self.middle
-        # TODO: Is it ok to connect an input directly to an output?
-        new_output = random.choice(output_choices)
-
-        # FIXME: Adjust output_choices, do not recurse
-        if new_input == new_output:
-            return self.add_random_connection(allow_middle)
-
-        new_input.outputs[new_output] = polarity
+        return new_input, input_polarity, new_output, output_polarity
