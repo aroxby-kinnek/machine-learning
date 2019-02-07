@@ -14,6 +14,14 @@ class Neuron(object):
     """
     Base Network Node
     """
+    class State(object):
+        NEUTRAL = 0
+        POSITIVE = 1
+        NEGATIVE = 2
+
+        def resolve(self, other):
+            return max(self, other)
+
     def __init__(self):
         self.outputs = {}
 
@@ -22,11 +30,9 @@ class Neuron(object):
 
     def simulate(self, hot, traversal):
         hot = self.eval(hot, traversal)
-        traversal[self] = traversal.get(self, False) or hot
+        traversal[self] = traversal.get(self, self.State.NEUTRAL) or hot
         for neuron, polarity in self.outputs.iteritems():
-            # TODO: A proper negative connection should override
-            # other connections
-            neuron.simulate(polarity == hot, traversal)
+            neuron.simulate(polarity.resolve(hot), traversal)
 
 
 class GameStateNeuron(Neuron):
@@ -38,7 +44,10 @@ class GameStateNeuron(Neuron):
         self.state_extractor = state_extractor
 
     def eval(self, hot, traversal):
-        return self.state_extractor(traversal.game.state)
+        if self.state_extractor(traversal.game.state):
+            return self.State.POSITIVE
+        else:
+            return self.State.NEUTRAL
 
 
 class Network(object):
@@ -53,7 +62,7 @@ class Network(object):
     def traverse(self):
         traversal = {}
         for node in self.inputs:
-            node.simulate(True, traversal)
+            node.simulate(node.State.POSITIVE, traversal)
         return traversal
 
     def add_random_neuron(self, allow_middle=True, factory=Neuron):
@@ -67,14 +76,14 @@ class Network(object):
 
     def add_random_connection(self):
         edge = self._create_canidate_edge()
-        new_input, input_polarity, new_output, output_polarity = edge
+        new_input, input_polarity, new_output, _ = edge
 
-        # TODO: Is it ok to connect an input directly to an output?
         new_input.outputs[new_output] = input_polarity
 
     def _create_canidate_edge(self, allow_middle=True):
-        input_polarity = random.choice((True, False))
-        output_polarity = random.choice((True, False))
+        possible_states = (Neuron.State.POSITIVE, Neuron.State.NEGATIVE)
+        input_polarity = random.choice(possible_states)
+        output_polarity = random.choice(possible_states)
 
         input_choices = self.inputs
         if allow_middle:
