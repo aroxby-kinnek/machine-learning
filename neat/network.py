@@ -16,26 +16,41 @@ class Neuron(object):
     Base Network Node
     """
     class State(object):
+        """
+        Enum of neuron states
+        """
         NEUTRAL = 0
         POSITIVE = 1
         NEGATIVE = 2
 
         def resolve(self, other):
+            """
+            Resolve compound state
+            """
             return max(self, other)
 
     def __init__(self):
         self.outputs = {}
 
     def eval(self, hot, traversal):
+        """
+        Determine actual state (can be overridden)
+        """
         return hot
 
     def simulate(self, hot, traversal):
+        """
+        Evaluate and propagate state
+        """
         hot = self.eval(hot, traversal)
         traversal[self] = traversal.get(self, self.State.NEUTRAL) or hot
         for neuron, polarity in self.outputs.iteritems():
             neuron.simulate(polarity.resolve(hot), traversal)
 
     def print(self, **kwargs):
+        """
+        Print node info
+        """
         output_hashes = [
             (polarity, hash(node))
             for polarity, node in self.outputs.iteritems()
@@ -68,12 +83,18 @@ class Network(object):
         self.middle = deepcopy(middle_layer) if middle_layer else []
 
     def traverse(self):
+        """
+        Evaluate network
+        """
         traversal = {}
         for node in self.inputs:
             node.simulate(node.State.POSITIVE, traversal)
         return traversal
 
     def add_random_neuron(self, allow_middle=True, factory=Neuron):
+        """
+        Mutate network with a new neuron
+        """
         edge = self._create_canidate_edge(allow_middle)
         new_input, input_polarity, new_output, output_polarity = edge
 
@@ -83,6 +104,9 @@ class Network(object):
         self.middle.append(new_input)
 
     def add_random_connection(self):
+        """
+        Mutate network with a new connection
+        """
         edge = self._create_canidate_edge()
         new_input, input_polarity, new_output, _ = edge
 
@@ -107,6 +131,9 @@ class Network(object):
         return new_input, input_polarity, new_output, output_polarity
 
     def print(self):
+        """
+        Print network info
+        """
         for layer in [self.inputs, self.middle, self.outputs]:
             for node in layer:
                 node.print(end=', ')
