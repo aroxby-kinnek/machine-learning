@@ -57,7 +57,7 @@ class Network(object):
         return traversal
 
     def add_random_neuron(self, allow_middle=True, factory=Neuron):
-        edge = self._create_canidate_edge()
+        edge = self._create_canidate_edge(allow_middle)
         new_input, input_polarity, new_output, output_polarity = edge
 
         node = factory()
