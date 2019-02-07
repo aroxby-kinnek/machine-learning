@@ -6,6 +6,7 @@ Video that inspired this entire machine-learning project:
 Original NEAT paper (that I didn't read):
     http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf
 """
+from __future__ import print_function
 from copy import deepcopy
 import random
 
@@ -33,6 +34,13 @@ class Neuron(object):
         traversal[self] = traversal.get(self, self.State.NEUTRAL) or hot
         for neuron, polarity in self.outputs.iteritems():
             neuron.simulate(polarity.resolve(hot), traversal)
+
+    def print(self, **kwargs):
+        output_hashes = [
+            (polarity, hash(node))
+            for polarity, node in self.outputs.iteritems()
+        ]
+        print(hash(self), '->', *output_hashes, **kwargs)
 
 
 class GameStateNeuron(Neuron):
@@ -97,3 +105,9 @@ class Network(object):
         new_output = random.choice(output_choices)
 
         return new_input, input_polarity, new_output, output_polarity
+
+    def print(self):
+        for layer in [self.inputs, self.middle, self.outputs]:
+            for node in layer:
+                node.print(end=', ')
+            print('')
