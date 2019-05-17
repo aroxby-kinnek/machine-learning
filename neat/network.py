@@ -82,6 +82,12 @@ class Network(object):
         self.outputs = deepcopy(output_layer)
         self.middle = deepcopy(middle_layer) if middle_layer else []
 
+    def deep_copy(self):
+        """
+        Create a copy of the network
+        """
+        return self.__class__(self.inputs, self.outputs, self.middle)
+
     def traverse(self):
         """
         Evaluate network
