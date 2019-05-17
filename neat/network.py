@@ -58,21 +58,6 @@ class Neuron(object):
         print(hash(self), '->', *output_hashes, **kwargs)
 
 
-class GameStateNeuron(Neuron):
-    """
-    Neuron is 'activated' by something in the game state
-    """
-    def __init__(self, state_extractor):
-        super(GameStateNeuron, self).__init__()
-        self.state_extractor = state_extractor
-
-    def eval(self, hot, traversal):
-        if self.state_extractor(traversal.game.state):
-            return self.State.POSITIVE
-        else:
-            return self.State.NEUTRAL
-
-
 class Network(object):
     """
     Neural Network
