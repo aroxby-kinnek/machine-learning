@@ -94,6 +94,7 @@ class BotTrainer(object):
 
     def _breed(self, bot):
         bots = []
+        # HACK: Shouldn't need to construct a game instance for this
         controls = self.game_factory().player_controls()
         for _ in xrange(self.generation_size):
             bots.append(bot.reproduce(
