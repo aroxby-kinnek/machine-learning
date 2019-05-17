@@ -141,3 +141,42 @@ class NullRenderer(BaseRenderer, RenderContext):
         Dummy method for compatibility
         """
         yield self
+
+
+class MemoryRenderer(BaseRenderer):
+    """
+    Save everything in a buffer
+    """
+    class Renderer(RenderContext):
+        """
+        The buffer
+        """
+        def __init__(self):
+            self.data = []
+
+        def reset_frame(self):
+            self.data = []
+
+        def draw_text_array(self, arr):
+            """
+            Draws an array of characters
+            """
+            for row in arr:
+                self.data.append(row)
+
+    @contextmanager
+    def render_context(self):
+        yield self.Renderer()
+
+
+class StateExtractor(MemoryRenderer):
+    class Renderer(MemoryRenderer.Renderer):
+        def get_state(self):
+            """
+            Extract entire game state
+            """
+            state = ''
+            for row in self.data:
+                for elem in row:
+                    state += elem
+            return state

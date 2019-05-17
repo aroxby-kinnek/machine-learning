@@ -139,8 +139,11 @@ class Maze(Game):
     def player_controls(self):
         return self.game_controls.keys()
 
-    def render(self, renderer):
+    def render_state(self, renderer):
         self.layout.render(renderer)
+
+    def render_game(self, renderer):
+        self.render_state(renderer)
         renderer.draw_text_array(['Score: {}'.format(self.score)])
 
     def won(self):
